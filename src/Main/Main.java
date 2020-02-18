@@ -6,11 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Scanner;
-
-import static Main.DBConnection.conn;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /*
 
@@ -25,11 +22,24 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        primaryStage.setTitle("Login");
+        Parent root = FXMLLoader.load(getClass().getResource("../view_controller/loginView.fxml"));
+        //primaryStage.setTitle("Login");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
     }
 
+    public static void main(String[] args) {
+
+        ResourceBundle rb = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
+
+        if (Locale.getDefault().getLanguage().equals("es")) {
+
+            System.out.println(rb.getString("hello") + " " + rb.getString("world"));
+
+        }
+
+        launch(args);
+
+    }
 
 }
