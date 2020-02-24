@@ -39,7 +39,15 @@ public class loginViewController implements Initializable {
             // Execute statement and create ResultSet obj
             ResultSet result = stmt.executeQuery(sqlStatement);
 
-            ResourceBundle rb = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
+            ResourceBundle rb = null;
+
+            try {
+
+                rb = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             while (result.next()) {
 
@@ -89,7 +97,13 @@ public class loginViewController implements Initializable {
     public void initialize (URL url, ResourceBundle rb) {
 
         // set to spanish if Locale.getDefault is in es
-        ResourceBundle resource = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
+        ResourceBundle resource = null;
+
+        try {
+            resource = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (Locale.getDefault().getLanguage().equals("es")) {
 

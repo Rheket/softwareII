@@ -8,54 +8,28 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.customerViewController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.customerViewController">
    <children>
-      <HBox prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="200.0" spacing="10.0">
+            <Label alignment="CENTER" text="Customer Information" />
+            <TextField fx:id="nameTextField" promptText="Name" />
+            <TextField fx:id="addressTextField" promptText="Address" />
+            <TextField fx:id="phoneNumberTextField" promptText="Phone Number" />
+            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="100.0" spacing="20.0">
                <children>
-                  <Label alignment="CENTER" text="Add" />
-                  <TextField fx:id="addName" promptText="Name" />
-                  <TextField fx:id="addAddress" promptText="Address" />
-                  <TextField fx:id="addPhoneNumber" promptText="Phone Number" />
-                  <Button mnemonicParsing="false" text="Add" />
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Update" />
-                  <TextField fx:id="updateName" promptText="Name" />
-                  <TextField fx:id="updateAddress" promptText="Address" />
-                  <TextField fx:id="updatePhoneNumber" promptText="Phone Number" />
+                  <Button mnemonicParsing="false" onAction="#addCustomerRecord" text="Add" />
                   <Button mnemonicParsing="false" text="Update" />
-               </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Delete" />
-                  <TextField fx:id="deleteName" promptText="Name" />
-                  <TextField fx:id="deleteAddress" promptText="Address" />
-                  <TextField fx:id="deletePhoneNumber" promptText="Phone Number" />
                   <Button mnemonicParsing="false" text="Delete" />
                </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
+            </HBox>
          </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
          <padding>
-            <Insets left="10.0" right="10.0" />
+            <Insets left="10.0" right="10.0" top="10.0" />
          </padding>
-      </HBox>
+      </VBox>
    </children>
 </AnchorPane>

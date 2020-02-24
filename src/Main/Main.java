@@ -10,12 +10,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /*
-
 Server name: 3.227.166.251
 Database name: U060YT
 Username: U060YT
 Password: 53688667824
-
  */
 
 public class Main extends Application {
@@ -30,13 +28,16 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 
-        ResourceBundle rb = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
+        //ResourceBundle rb = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
 
+        /*
         if (Locale.getDefault().getLanguage().equals("es")) {
 
             System.out.println(rb.getString("hello") + " " + rb.getString("world"));
 
         }
+
+         */
 
         launch(args);
 
