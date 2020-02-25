@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.addAppointmentViewController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+            <AnchorPane prefHeight="39.0" prefWidth="600.0">
+               <children>
+                          <Button layoutX="149.0" layoutY="12.0" mnemonicParsing="false" text="Main Menu" />
+               </children>
+            </AnchorPane>
+                <Label alignment="CENTER" contentDisplay="CENTER" text="Add Appointment">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <MenuButton mnemonicParsing="false" text="Customer Name">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                        <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                </MenuButton>
+                <TextField maxWidth="300.0" promptText="Title" />
+                <TextField maxWidth="300.0" promptText="Consultant" />
+                <TextField maxWidth="300.0" promptText="Location" />
+                <TextField maxWidth="300.0" promptText="Description" />
+                <TextField maxWidth="300.0" promptText="Contact" />
+                <HBox alignment="CENTER" prefHeight="48.0" prefWidth="600.0" spacing="20.0">
+                    <children>
+                        <Label text="Label" />
+                        <MenuButton mnemonicParsing="false" text="MenuButton">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                <MenuItem mnemonicParsing="false" text="Action 2" />
+                            </items>
+                        </MenuButton>
+                        <MenuButton mnemonicParsing="false" text="MenuButton">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                <MenuItem mnemonicParsing="false" text="Action 2" />
+                            </items>
+                        </MenuButton>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="38.0" prefWidth="600.0" spacing="20.0">
+                    <children>
+                        <Label text="Label" />
+                        <MenuButton mnemonicParsing="false" text="MenuButton">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                <MenuItem mnemonicParsing="false" text="Action 2" />
+                            </items>
+                        </MenuButton>
+                        <MenuButton mnemonicParsing="false" text="MenuButton">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Action 1" />
+                                <MenuItem mnemonicParsing="false" text="Action 2" />
+                            </items>
+                        </MenuButton>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="71.0" prefWidth="600.0" spacing="50.0">
+                    <children>
+                          <Button mnemonicParsing="false" text="Save" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

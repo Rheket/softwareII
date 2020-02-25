@@ -2,12 +2,19 @@ package view_controller;
 
 import DAO.DBConnection;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import javafx.event.ActionEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +30,7 @@ public class loginViewController implements Initializable {
 
     boolean spanish = false;
 
-    @FXML private void handleLogin() {
+    public void handleLogin(ActionEvent actionEvent) throws IOException {
 
         String username = this.usernameTextField.getText();
         String password = this.passwordTextField.getText();
@@ -52,6 +59,15 @@ public class loginViewController implements Initializable {
             while (result.next()) {
 
                 if (username.equals(result.getString("userName")) && password.equals(result.getString("password"))) {
+
+                    // switch to main screen if log in successful
+
+                    Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/view_controller/mainScreen.fxml"));
+                    Scene mainScreenScene = new Scene(mainScreenParent);
+
+                    Stage mainScreenWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                    mainScreenWindow.setScene(mainScreenScene);
+                    mainScreenWindow.show();
 
                     System.out.println("SUCCESS!!!!");
 
@@ -116,5 +132,6 @@ public class loginViewController implements Initializable {
         }
 
     }
+
 
 }
