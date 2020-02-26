@@ -1,5 +1,6 @@
 package view_controller;
 
+import DAO.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 public class customerViewController implements Initializable {
@@ -40,6 +43,17 @@ public class customerViewController implements Initializable {
         String customerPhoneNumber = phoneNumberTextField.getText();
         String city = cityTextField.getText();
         String zipCode = zipCodeTextField.getText();
+
+        try {
+            DBConnection.makeConnection();
+            Statement stmt = DBConnection.conn.createStatement();
+
+            String sqlStatement = "INSERT INTO `customer` VALUES (" + customerId + ", '" + customerName + "'," + customerAddress + ",1,'" + createdDate + user + lastUpdated + lastUpdatedBy ;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     /*
     FIXME Write code to add customer data to the SQL database
