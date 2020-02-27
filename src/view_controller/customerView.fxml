@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.customerViewController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.customerViewController">
    <children>
       <HBox prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="450.0" prefWidth="348.0" spacing="10.0">
+            <VBox prefHeight="450.0" prefWidth="423.0" spacing="10.0">
                <children>
                   <AnchorPane>
                      <children>
@@ -27,17 +28,26 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <TextField promptText="Name" />
-                  <TextField promptText="Address" />
-                  <TextField promptText="Phone Number" />
-                  <TextField promptText="Zip Code" />
-                  <TextField promptText="Country" />
-                  <TextField promptText="City" />
+                  <TextField fx:id="nameTextField" promptText="Name" />
+                  <ComboBox fx:id="countryComboBox" promptText="Country">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </ComboBox>
+                  <ComboBox fx:id="cityComboBox" promptText="City">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </ComboBox>
+                  <ComboBox fx:id="addressComboBox" promptText="Address">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </ComboBox>
+                  <ComboBox fx:id="zipComboBox" promptText="Zip Code" />
                   <HBox alignment="CENTER" prefHeight="50.0" prefWidth="100.0" spacing="20.0">
                      <children>
                         <Button mnemonicParsing="false" onAction="#addCustomerRecord" text="Add" />
-                        <Button mnemonicParsing="false" text="Update" />
-                        <Button mnemonicParsing="false" text="Delete" />
                      </children>
                   </HBox>
                </children>
@@ -50,13 +60,18 @@
             </VBox>
             <VBox alignment="CENTER" spacing="10.0">
                <children>
-                  <TableView prefHeight="400.0" prefWidth="495.0">
+                  <TableView prefHeight="400.0" prefWidth="510.0">
                      <columns>
                         <TableColumn prefWidth="75.0" text="Name" />
                         <TableColumn prefWidth="75.0" text="Address" />
                      </columns>
                   </TableView>
-                  <Button mnemonicParsing="false" text="Edit Existing Customer" />
+                  <HBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#updateCustomerRecord" text="Edit Existing Customer" />
+                        <Button mnemonicParsing="false" onAction="#deleteCustomerRecord" text="Delete" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>
