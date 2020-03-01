@@ -24,7 +24,8 @@ public class City {
         this.city = city;
     }
 
-    public int getCityId() {
+    public int getCityId(City city) {
+
         return cityId;
     }
 

@@ -1,6 +1,7 @@
 package view_controller;
 
 import DAO.DBConnection;
+import Model.City;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ResourceBundle;
 
 public class customerViewController implements Initializable {
@@ -53,12 +55,33 @@ public class customerViewController implements Initializable {
         String address = String.valueOf(addressComboBox.getSelectionModel().getSelectedItem());
         String zipCode = String.valueOf(zipComboBox.getSelectionModel().getSelectedItem());
 
-        int customerId = 1;
+        int cityId;
+
+        for (int i = 0; i < 3; i++) {
+
+            if (city.equals("123 Main")) {
+                cityId = 1;
+            } else if (city.equals("123 Elm")) {
+                cityId = 2;
+            } else {
+                cityId = 3;
+            }
+
+        }
+
+
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+
+        int customerId = 4;
 
         try {
             DBConnection.makeConnection();
             Statement stmt = DBConnection.conn.createStatement();
-            String sqlStatement = "INSERT INTO `customer` VALUES (" + customerId + ", '" + name + "'," + address + ",1,'2019-01-01 00:00:00','test','" + "test','2019-01-01 00:00:00','test')";
+            String sqlStatement = "INSERT INTO `customer` VALUES (" + customerId + ", '" + name + "'," + address + ",1,'" + ts + "','test','" + "test','2019-01-01 00:00:00','test')";
+
+            stmt.executeUpdate(sqlStatement);
+
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -105,9 +128,8 @@ public class customerViewController implements Initializable {
         try {
 
             String sqlStatement = "SELECT * FROM country";
-            Statement stmt = null;
 
-            stmt = DBConnection.conn.createStatement();
+            Statement stmt = DBConnection.conn.createStatement();
 
             ResultSet result = stmt.executeQuery(sqlStatement);
 
@@ -128,8 +150,7 @@ public class customerViewController implements Initializable {
         try {
 
             String sqlStatement = "SELECT * FROM city";
-            Statement stmt = null;
-            stmt = DBConnection.conn.createStatement();
+            Statement stmt = DBConnection.conn.createStatement();
             ResultSet result = stmt.executeQuery(sqlStatement);
 
             while (result.next()) {
@@ -148,19 +169,36 @@ public class customerViewController implements Initializable {
         try {
 
             String sqlStatement = "SELECT * FROM address";
-            Statement stmt = null;
-            stmt = DBConnection.conn.createStatement();
+            Statement stmt = DBConnection.conn.createStatement();
             ResultSet result = stmt.executeQuery(sqlStatement);
 
             while (result.next()) {
 
-                String getAddress = result.getString("address");
-                String getZip = result.getString("postalCode");
+                String getAddress = result.getString("Address");
 
                 associatedAddress.add(getAddress);
+
+                addressComboBox.setItems(associatedAddress);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getZipSelections() {
+
+        try {
+
+            String sqlStatement = "SELECT * FROM address";
+            Statement stmt = DBConnection.conn.createStatement();
+            ResultSet result = stmt.executeQuery(sqlStatement);
+
+            while (result.next()) {
+
+                String getZip = result.getString("postalCode");
                 associatedZipCode.add(getZip);
 
-                cityComboBox.setItems(associatedAddress);
                 zipComboBox.setItems(associatedZipCode);
             }
         } catch (SQLException e) {
@@ -175,6 +213,7 @@ public class customerViewController implements Initializable {
         getCountrySelections();
         getAddressSelections();
         getCitySelections();
+        getZipSelections();
 
     }
 
