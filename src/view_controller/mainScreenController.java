@@ -13,7 +13,7 @@ public class mainScreenController {
 
     public void handleCalendarViewSwitch(ActionEvent actionEvent) throws IOException {
 
-        Parent calendarViewParent = FXMLLoader.load(getClass().getResource("/view_controller/calendarView.fxml"));
+        Parent calendarViewParent = FXMLLoader.load(getClass().getResource("/view_controller/monthlyView.fxml"));
         Scene calendarViewScene = new Scene(calendarViewParent);
 
         Stage calendarViewWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

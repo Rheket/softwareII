@@ -1,0 +1,11 @@
+Number of Appointments per month:
+
+APRIL: 2
+MAY: 0
+JUNE: 1
+JULY: 0
+AUGUST: 1
+SEPTEMBER: 0
+OCTOBER: 0
+NOVEMBER: 0
+DECEMBER: 0

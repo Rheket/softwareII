@@ -1,79 +1,84 @@
 package Model;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+import DAO.DBConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public final class Customer {
 
-    private final SimpleIntegerProperty customerId = new SimpleIntegerProperty();
-    private final SimpleStringProperty customerName = new SimpleStringProperty();
-    private final SimpleStringProperty customerAddress = new SimpleStringProperty();
-    private final SimpleStringProperty customerCity = new SimpleStringProperty();
-    private final SimpleStringProperty customerZip = new SimpleStringProperty();
-    private final SimpleStringProperty customerPhone = new SimpleStringProperty();
+    private int customerId = 0;
+    private String customerName = null;
 
+    private String customerAddress = null;
+    private int customerActive = 0;
+    /*
+    private int customerCity = 0;
+    private int customerZip = 0;
+    private int customerPhone = 0;
+
+
+     */
+    //public static int customerAppId;
+
+    public static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
     public Customer() {
-
-    }
-
-    public Customer(int id, String name, String address, String city, String phoneNumber, String zip) {
-
-        setCustomerId(id);
-        setCustomerName(name);
-        setCustomerAddress(address);
-        setCustomerCity(city);
-        setCustomerPhoneNumber(phoneNumber);
-        setCustomerZip(zip);
-
     }
 
     public int getCustomerId() {
-        return customerId.get();
-    }
 
-    public String getCustomerName() {
-        return customerName.get();
-    }
-
-    public String getCustomerAddress() {
-        return customerCity.get();
-    }
-
-    public String getCustomerCity() {
-        return customerCity.get();
-    }
-
-    public String getCustomerPhone() {
-        return customerPhone.get();
-    }
-
-    public String getCustomerZip() {
-        return customerZip.get();
+        return customerId;
     }
 
     public void setCustomerId(int customerId) {
-        this.customerId.set(customerId);
+        this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
     }
 
     public void setCustomerName(String customerName) {
-        this.customerName.set(customerName);
+        this.customerName = customerName;
     }
 
     public void setCustomerAddress(String customerAddress) {
-        this.customerAddress.set(customerAddress);
+        this.customerAddress = customerAddress;
     }
 
-    public void setCustomerCity(String customerCity) {
-        this.customerCity.set(customerCity);
+    public void setCustomerActive(int customerActive) {
+        this.customerActive = customerActive;
     }
 
-    public void setCustomerPhoneNumber(String customerPhoneNumber) {
-        this.customerPhone.set(customerPhoneNumber);
+    public static ObservableList<Customer> getAllCustomers() {
+        return allCustomers;
     }
 
-    public void setCustomerZip(String customerZip) {
-        this.customerZip.set(customerZip);
+    public static int getCustomerAppId(String cName) {
+
+        int appointmentCustomerId = 0;
+
+        try {
+
+            String sqlStatement = "SELECT * FROM customer WHERE customerName = '" + cName + "'";
+            Statement stmt = DBConnection.conn.createStatement();
+            ResultSet result = stmt.executeQuery(sqlStatement);
+
+            while (result.next()) {
+
+                appointmentCustomerId = result.getInt("customerId");
+
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return appointmentCustomerId;
     }
 
 

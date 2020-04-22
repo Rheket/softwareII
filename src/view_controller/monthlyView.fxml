@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -8,26 +9,33 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.weeklyViewController">
+<AnchorPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.monthlyViewController">
     <children>
         <VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                  <Label fx:id="weekLabel" alignment="CENTER" contentDisplay="CENTER" text="Week" />
-                <HBox alignment="CENTER" spacing="40.0">
+                  <Label fx:id="monthLabel" text="Month" />
+                <HBox alignment="CENTER" prefWidth="600.0" spacing="40.0">
                     <children>
                         <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#mainMenu" prefHeight="25.0" prefWidth="100.0" text="Main Menu" />
-                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#previous" prefHeight="25.0" prefWidth="100.0" text="Previous Week" />
-                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#next" prefHeight="25.0" prefWidth="100.0" text="Next Week" />
-                        <VBox spacing="5.0" />
-                  <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToMonthlyView" prefHeight="25.0" prefWidth="100.0" text="Monthly View" />
+                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#previous" prefHeight="25.0" prefWidth="100.0" text="Previous Month" />
+                        <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#next" prefHeight="25.0" prefWidth="100.0" text="Next Month" />
+                        <VBox spacing="5.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                        </VBox>
+                  <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToWeeklyView" prefHeight="25.0" prefWidth="100.0" text="Weekly View" />
                     </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
                 </HBox>
             <TableView fx:id="appointmentTableView" prefHeight="200.0" prefWidth="200.0">
               <columns>
-                <TableColumn fx:id="appointmentIdColumn" maxWidth="40.0" minWidth="30.0" prefWidth="-1.0" text="ID" />
-                <TableColumn fx:id="appointmentStartTableColumn" prefWidth="115.0" text="Start" />
+                  <TableColumn fx:id="appointmentIdColumn" maxWidth="40.0" minWidth="30.0" prefWidth="-1.0" text="ID" />
+                  <TableColumn fx:id="appointmentStartTableColumn" prefWidth="75.0" text="Start" />
                   <TableColumn fx:id="appointmentEndTableColumn" prefWidth="75.0" text="End" />
-                  <TableColumn fx:id="appointmentTitleTableColumn" prefWidth="75.0" text="Title" />
+                <TableColumn fx:id="appointmentTitleTableColumn" prefWidth="75.0" text="Title" />
                   <TableColumn fx:id="appointmentLocationTableColumn" prefWidth="75.0" text="Location" />
                   <TableColumn fx:id="appointmentTypeTableColumn" prefWidth="75.0" text="Type" />
               </columns>
@@ -43,6 +51,9 @@
                </children>
             </HBox>
             </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
         </VBox>
     </children>
 </AnchorPane>

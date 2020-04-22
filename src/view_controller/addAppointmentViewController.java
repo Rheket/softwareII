@@ -2,8 +2,7 @@ package view_controller;
 
 import DAO.DBConnection;
 import Model.Appointment;
-import Model.Customer;
-import Model.User;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,26 +13,30 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.io.IOError;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-import static Model.Appointment.getAllAppointments;
+import static Model.Appointment.allAppointments;
 import static Model.Customer.getCustomerAppId;
 import static Model.User.getUserId;
 import static Model.User.getUsername;
 
 
 public class addAppointmentViewController implements Initializable {
+
+    @FXML public Button saveButton;
+    @FXML public Button updateButton;
 
     @FXML private Label addAppointmentLabel;
     @FXML private ComboBox customerNameComboBox;
@@ -54,31 +57,37 @@ public class addAppointmentViewController implements Initializable {
     private String appointmentContact;
     private String appointmentType;
     private String appointmentUrl;
-    private String appointmentStart;
+    private String app;
     private String appointmentStartTime;
-    private String appointmentEnd;
     private String appointmentEndTime;
 
     private ObservableList<String> customerNames = FXCollections.observableArrayList();
     private ObservableList<LocalTime> businessHours = FXCollections.observableArrayList();
 
     private int userAppId = 0;
+    public SimpleIntegerProperty selectedAppointmentId;
+    private boolean appCheck = false;
+    private boolean validStart = true;
+    private String overlappingTime;
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.s");
+    private DateTimeFormatter secondFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public void cancelAppointmentView(ActionEvent actionEvent) throws IOException {
 
 
         //change scenes to calendar view controller
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view_controller/calendarView.fxml"));
+        loader.setLocation(getClass().getResource("/view_controller/monthlyView.fxml"));
         Parent calendarViewParent = loader.load();
 
         Scene calendarViewScene = new Scene(calendarViewParent);
 
         //access appointment table view controller
-        calendarViewController controller = loader.getController();
-        //clear table first
-        //controller.appointmentTableView.getItems().clear();
-        controller.setAppointmentTableView();
+        monthlyViewController controller = loader.getController();
+        //clear table and reset tableview
+        controller.setMonthAppointmentTableView();
+        controller.initializeAppointments();
 
         Stage calendarViewWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         calendarViewWindow.setScene(calendarViewScene);
@@ -87,10 +96,122 @@ public class addAppointmentViewController implements Initializable {
 
     }
 
-    public void saveAddAppointment(ActionEvent actionEvent) throws IOException{
+    public void saveAddAppointment(ActionEvent actionEvent) throws IOException {
 
-        //User user = new User();
-        Appointment appointment = new Appointment();
+        if (customerNameComboBox.getValue() == null | appointmentTitleTextField.getText().trim().equals("") | appointmentDescriptionTextField.getText().trim().equals("") | appointmentLocationTextField.getText().trim().equals("") | appointmentContactTextField.getText().trim().equals("") | appointmentTypeTextField.getText().trim().equals("") | appointmentUrlTextField.getText().trim().equals("") | appointmentStartTimeComboBox.getValue() == null | appointmentEndTimeComboBox.getValue() == null | appointmentDate.getValue() == null) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setTitle("Error adding Appointment");
+            alert.setContentText("Please make sure all fields are filled");
+
+            alert.showAndWait();
+
+        } else {
+
+            Appointment appointment = new Appointment();
+
+            customerName = String.valueOf(customerNameComboBox.getSelectionModel().getSelectedItem());
+            appointmentTitle = appointmentTitleTextField.getText();
+            appointmentDescription = appointmentDescriptionTextField.getText();
+            appointmentLocation = appointmentLocationTextField.getText();
+            appointmentContact = appointmentContactTextField.getText();
+            appointmentType = appointmentTypeTextField.getText();
+            appointmentUrl = appointmentUrlTextField.getText();
+            app = String.valueOf(appointmentDate.getValue());
+            appointmentStartTime = String.valueOf(appointmentStartTimeComboBox.getSelectionModel().getSelectedItem());
+            appointmentEndTime = String.valueOf(appointmentEndTimeComboBox.getSelectionModel().getSelectedItem());
+
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
+
+            int appointmentId = appointment.getAppIdCounter() + 1;
+            String usr = getUsername();
+            int customerAppsId = getCustomerAppId(customerName);
+            userAppId = getUserId(usr);
+            String fullStart = app + " " + appointmentStartTime;
+            String fullEnd = app + " " + appointmentEndTime;
+
+            LocalDateTime checkStartOverlap = LocalDateTime.parse(fullStart, secondFormatter);
+            LocalDateTime checkEndOverlap = LocalDateTime.parse(fullEnd, secondFormatter);
+
+            validateStart(checkStartOverlap, checkEndOverlap);
+            checkOverlapping(checkStartOverlap, checkEndOverlap);
+
+            if(appCheck) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Error Adding Appointment");
+                alert.setContentText("An appointment already exists from: " + "\n" + overlappingTime + "\nplease choose a time that doesn't overlap.");
+
+                alert.showAndWait();
+                appCheck = false;
+
+            } else if (!validStart) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Start time error");
+                alert.setContentText("Appointment start time can not be after or the same as end time");
+                alert.showAndWait();
+                validStart = true;
+
+            } else {
+
+                try {
+
+                    Statement stmt = DBConnection.conn.createStatement();
+                    String sqlStatement = "INSERT INTO `appointment` VALUES (" + appointmentId + "," + customerAppsId + "," + userAppId + ",'" + appointmentTitle + "','" + appointmentDescription + "','" + appointmentLocation + "','" + appointmentContact + "','" + appointmentType + "','" + appointmentUrl + "','" + fullStart + "','" + fullEnd + "','" + ts + "','" + usr + "','" + ts + "','" + usr + "')" ;
+                    stmt.executeUpdate(sqlStatement);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.setTitle("Appointment added");
+                    alert.setContentText("Appointment from " + fullStart + " to " + fullEnd + " has been added.");
+
+                    alert.showAndWait();
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                Parent mainMenuParent = FXMLLoader.load(getClass().getResource("/view_controller/mainScreen.fxml"));
+                Scene mainMenuScene = new Scene(mainMenuParent);
+
+                Stage mainMenuWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                mainMenuWindow.setScene(mainMenuScene);
+                mainMenuWindow.show();
+
+            }
+
+        }
+
+    }
+
+    public void checkOverlapping(LocalDateTime start, LocalDateTime end) {
+
+        for (Appointment allAppointment : allAppointments) {
+
+            LocalDateTime checkStart = LocalDateTime.parse(allAppointment.getAppointmentStart().getValue(), formatter);
+            LocalDateTime checkEnd = LocalDateTime.parse(allAppointment.getAppointmentEnd().getValue(), formatter);
+
+            if (start.plusSeconds(1).isAfter(checkStart) && start.minusSeconds(1).isBefore(checkEnd)) {
+
+                appCheck = true;
+                overlappingTime = checkStart.getHour() + ":" + checkStart.getMinute() + " to " + checkEnd.getHour() + ":" + checkEnd.getMinute();
+
+            } else if (end.plusSeconds(1).isAfter(checkStart) && end.minusSeconds(1).isBefore(checkEnd)) {
+                appCheck = true;
+                overlappingTime = checkStart.getHour() + ":" + checkStart.getMinute() + " to " + checkEnd.getHour() + ":" + checkEnd.getMinute();
+            }
+
+        }
+
+
+
+        }
+
+    public void saveUpdateAppointment(ActionEvent actionEvent) throws IOException {
 
         customerName = String.valueOf(customerNameComboBox.getSelectionModel().getSelectedItem());
         appointmentTitle = appointmentTitleTextField.getText();
@@ -99,68 +220,81 @@ public class addAppointmentViewController implements Initializable {
         appointmentContact = appointmentContactTextField.getText();
         appointmentType = appointmentTypeTextField.getText();
         appointmentUrl = appointmentUrlTextField.getText();
-        appointmentStart = String.valueOf(appointmentDate.getValue());
+        app = String.valueOf(appointmentDate.getValue());
         appointmentStartTime = String.valueOf(appointmentStartTimeComboBox.getSelectionModel().getSelectedItem());
-        appointmentEnd = String.valueOf(appointmentDate.getValue());
+
         appointmentEndTime = String.valueOf(appointmentEndTimeComboBox.getSelectionModel().getSelectedItem());
 
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
-        int appointmentId = appointment.getAppIdCounter() + 1;
         String usr = getUsername();
-        int customerAppsId = getCustomerAppId(customerName);
         userAppId = getUserId(usr);
-        String fullStart = appointmentStart + " " + appointmentStartTime;
-        String fullEnd = appointmentEnd + " " + appointmentEndTime;
+        String fullStart = app + " " + appointmentStartTime;
+        String fullEnd = app + " " + appointmentEndTime;
 
-        try {
+        LocalDateTime checkStartOverlap = LocalDateTime.parse(fullStart, secondFormatter);
+        LocalDateTime checkEndOverlap = LocalDateTime.parse(fullEnd, secondFormatter);
 
-            Statement stmt = DBConnection.conn.createStatement();
-            String sqlStatement = "INSERT INTO `appointment` VALUES (" + appointmentId + "," + customerAppsId + "," + userAppId + ",'" + appointmentTitle + "','" + appointmentDescription + "','" + appointmentLocation + "','" + appointmentContact + "','" + appointmentType + "','" + appointmentUrl + "','" + fullStart + "','" + fullEnd + "','" + ts + "','" + usr + "','" + ts + "','" + usr + "')" ;
-            stmt.executeUpdate(sqlStatement);
+        checkOverlapping(checkStartOverlap, checkEndOverlap);
 
-            //System.out.println(sqlStatement);
+        if(appCheck) {
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        Parent mainMenuParent = FXMLLoader.load(getClass().getResource("/view_controller/mainScreen.fxml"));
-        Scene mainMenuScene = new Scene(mainMenuParent);
-
-        Stage mainMenuWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        mainMenuWindow.setScene(mainMenuScene);
-        mainMenuWindow.show();
-    }
-
-    public void saveUpdateAppointment(ActionEvent actionEvent) throws IOException {
-
-        //int selectedAppointmentId = appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentId();
-
-        try {
-
-            String sqlStatement = "SELECT * FROM appointment WHERE appointmentId=";
-            Statement stmt = DBConnection.conn.createStatement();
-            ResultSet result = stmt.executeQuery(sqlStatement);
-
-            while (result.next()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setTitle("Error Adding Appointment");
+            alert.setContentText("An appointment already exists from: " + "\n" + overlappingTime + "\nplease choose a time that doesn't overlap.");
 
 
+            alert.showAndWait();
+            appCheck = false;
 
+        } else if(!validStart) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setTitle("Start time error");
+            alert.setContentText("Appointment start time can not be after or the same as end time");
+            alert.showAndWait();
+            validStart = true;
+
+        } else {
+
+            try {
+
+                String sqlStatement = "UPDATE appointment SET userId=" + userAppId + ", title='" + appointmentTitle + "', description='" + appointmentDescription + "', location='" + appointmentLocation + "', contact='" + appointmentContact + "', type='" + appointmentType + "', url='" + appointmentUrl + "', start='" + fullStart + "', end='" + fullEnd + "', lastUpdate='" + ts + "', lastUpdateBy='" + usr + "' WHERE appointmentId=" + selectedAppointmentId;
+                Statement stmt = DBConnection.conn.createStatement();
+                stmt.executeUpdate(sqlStatement);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Appointment updated");
+                alert.setContentText("Appointment from " + fullStart + " to " + fullEnd + " has been updated.");
+
+                alert.showAndWait();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        Parent mainMenuParent = FXMLLoader.load(getClass().getResource("/view_controller/mainScreen.fxml"));
-        Scene mainMenuScene = new Scene(mainMenuParent);
+        //change scenes to calendar view controller
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view_controller/monthlyView.fxml"));
+        Parent calendarViewParent = loader.load();
 
-        Stage mainMenuWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        mainMenuWindow.setScene(mainMenuScene);
-        mainMenuWindow.show();
+        Scene calendarViewScene = new Scene(calendarViewParent);
+
+        //access appointment table view controller
+        monthlyViewController controller = loader.getController();
+        //clear table and reset table view
+        controller.setMonthAppointmentTableView();
+        controller.initializeAppointments();
+
+        Stage calendarViewWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        calendarViewWindow.setScene(calendarViewScene);
+        calendarViewWindow.show();
     }
-
 
     private void setCustomerSelections() {
 
@@ -185,7 +319,7 @@ public class addAppointmentViewController implements Initializable {
 
     private void setStartTimes() {
 
-        //Business hours are 9am - 5pm PACIFIC Time
+        //Business hours are 9am - 5pm UTC Time
         //Appointments are in 30 minute intervals
 
         LocalTime startingHour = LocalTime.of(9,0,0);
@@ -202,20 +336,28 @@ public class addAppointmentViewController implements Initializable {
 
     }
 
-    public void initializePartToUpdate(Appointment appointment) {
+    private void validateStart(LocalDateTime s, LocalDateTime e) {
 
-        appointmentTitleTextField.setText(appointment.getAppointmentTitle());
-        appointmentDescriptionTextField.setText(appointment.getAppointmentDescription());
-        appointmentLocationTextField.setText(appointment.getAppointmentLocation());
+        if(s.isAfter(e) | s.isEqual(e)) {
+
+            validStart = false;
+
+        }
+
+    }
+
+    public void initializeToUpdate(Appointment appointment) {
+
+        appointmentTitleTextField.setText(appointment.getAppointmentTitle().get());
+        appointmentDescriptionTextField.setText(appointment.getAppointmentDescription().get());
+        appointmentLocationTextField.setText(appointment.getAppointmentLocation().get());
         appointmentContactTextField.setText(appointment.getAppointmentContact());
-        appointmentTypeTextField.setText(appointment.getAppointmentType());
+        appointmentTypeTextField.setText(appointment.getAppointmentType().get());
         appointmentUrlTextField.setText(appointment.getAppointmentUrl());
 
         customerNameComboBox.setVisible(false);
+        saveButton.setVisible(false);
         addAppointmentLabel.setText("Editing appointment for: " + appointment.getCustomerId());
-
-
-
 
     }
 

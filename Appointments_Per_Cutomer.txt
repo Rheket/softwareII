@@ -1,0 +1,7 @@
+Number of appointments per customer
+
+John Doe: 2
+Alfred E Newman: 1
+Ina Prufung: 1
+Robin: 1
+Ed Sheeran: 0

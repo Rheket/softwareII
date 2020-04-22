@@ -1,6 +1,8 @@
 package view_controller;
 
 import DAO.DBConnection;
+import Model.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,12 +15,16 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import javafx.event.ActionEvent;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -34,6 +40,9 @@ public class loginViewController implements Initializable {
 
         String username = this.usernameTextField.getText();
         String password = this.passwordTextField.getText();
+
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.s");
+
 
         try {
 
@@ -60,8 +69,26 @@ public class loginViewController implements Initializable {
 
                 if (username.equals(result.getString("userName")) && password.equals(result.getString("password"))) {
 
-                    // switch to main screen if log in successful
+                    //log login timestamp if log in is successful
+                    String filename = "login_Timestamps.txt";
 
+                    //Get local time and convert to UTC for logs
+                    ZonedDateTime now = ZonedDateTime.now();
+                    ZonedDateTime nowUTC = now.withZoneSameInstant(ZoneId.of("UTC"));
+
+                    //set current user instance
+                    //User user = new User();
+                    User.setUsername(username);
+
+                    //append data to existing file instead of overwriting
+                    FileWriter fileWriter = new FileWriter(filename, true);
+                    PrintWriter outputFile = new PrintWriter(fileWriter);
+
+                    outputFile.println( username + " logged in at " + nowUTC);
+
+                    outputFile.close();
+
+                    // switch to main screen after logging timestamp
                     Parent mainScreenParent = FXMLLoader.load(getClass().getResource("/view_controller/mainScreen.fxml"));
                     Scene mainScreenScene = new Scene(mainScreenParent);
 
@@ -69,7 +96,6 @@ public class loginViewController implements Initializable {
                     mainScreenWindow.setScene(mainScreenScene);
                     mainScreenWindow.show();
 
-                    System.out.println("SUCCESS!!!!");
 
                 } else {
 
@@ -85,6 +111,7 @@ public class loginViewController implements Initializable {
 
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.initModality(Modality.APPLICATION_MODAL);
+                        assert rb != null;
                         alert.setTitle(rb.getString("loginError"));
                         alert.setContentText(rb.getString("alertMessage"));
 
@@ -92,20 +119,45 @@ public class loginViewController implements Initializable {
 
                     }
 
-                    //testing by printing out to console
-                    //System.out.println("ERROR Logging in");
-                    //System.out.println(username);
-                    //System.out.println(password);
                 }
 
             }
 
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
 
             e.printStackTrace();
 
         }
+
+        check15Min();
+
+    }
+
+    private void check15Min() {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        try {
+
+            Statement stmt = DBConnection.conn.createStatement();
+            String sqlStatement = "SELECT * FROM appointment WHERE start >= '" + now + "' and start <= '" + now.plusMinutes(15) + "'";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+
+            while(result.next()) {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Appointment in 15 minutes");
+                alert.setContentText("There is an upcoming appointment at " + result.getString("start"));
+
+                alert.showAndWait();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -123,6 +175,7 @@ public class loginViewController implements Initializable {
 
         if (Locale.getDefault().getLanguage().equals("es")) {
 
+            assert resource != null;
             usernameTextField.setPromptText(resource.getString("username"));
             passwordTextField.setPromptText(resource.getString("password"));
             loginButton.setText(resource.getString("login"));

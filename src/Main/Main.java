@@ -28,17 +28,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 
-        //ResourceBundle rb = ResourceBundle.getBundle("utilities/Nat", Locale.getDefault());
-
-        /*
-        if (Locale.getDefault().getLanguage().equals("es")) {
-
-            System.out.println(rb.getString("hello") + " " + rb.getString("world"));
-
-        }
-
-         */
-
         launch(args);
 
     }
