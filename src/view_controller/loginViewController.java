@@ -41,9 +41,6 @@ public class loginViewController implements Initializable {
         String username = this.usernameTextField.getText();
         String password = this.passwordTextField.getText();
 
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.s");
-
-
         try {
 
             DBConnection.makeConnection();

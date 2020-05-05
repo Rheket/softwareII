@@ -164,6 +164,7 @@ public class weeklyViewController implements Initializable {
             });
 
             //clear table and update with new appointments
+            allAppointments.clear();
             appointmentTableView.getItems().clear();
             initializeAppointments();
 
@@ -342,9 +343,12 @@ public class weeklyViewController implements Initializable {
                 //get the times from the sql table
                 LocalDateTime ldtStart = LocalDateTime.parse(result.getString("start"), formatter);
                 LocalDateTime ldtEnd = LocalDateTime.parse(result.getString("end"), formatter);
-                //convert values to ZonDateTime in local time
-                ZonedDateTime startTime =  ZonedDateTime.of(ldtStart, ZoneId.systemDefault());
-                ZonedDateTime endTime = ZonedDateTime.of(ldtEnd, ZoneId.systemDefault());
+                //Database times are in UTC
+                ZonedDateTime startTimeUTC = ZonedDateTime.of(ldtStart, ZoneId.of("UTC"));
+                ZonedDateTime endTimeUTC = ZonedDateTime.of(ldtEnd, ZoneId.of("UTC"));
+                //convert values to display in local time
+                ZonedDateTime startTime =  startTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
+                ZonedDateTime endTime = endTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
 
                 appointment.setAppointmentStart(formatter.format((startTime)));
                 appointment.setAppointmentEnd(formatter.format(endTime));
@@ -401,9 +405,12 @@ public class weeklyViewController implements Initializable {
                 //get the times from the sql table
                 LocalDateTime ldtStart = LocalDateTime.parse(result.getString("start"), formatter);
                 LocalDateTime ldtEnd = LocalDateTime.parse(result.getString("end"), formatter);
-                //convert values to ZonDateTime in local time
-                ZonedDateTime startTime =  ZonedDateTime.of(ldtStart, ZoneId.systemDefault());
-                ZonedDateTime endTime = ZonedDateTime.of(ldtEnd, ZoneId.systemDefault());
+                //Database times are in UTC
+                ZonedDateTime startTimeUTC = ZonedDateTime.of(ldtStart, ZoneId.of("UTC"));
+                ZonedDateTime endTimeUTC = ZonedDateTime.of(ldtEnd, ZoneId.of("UTC"));
+                //convert values to display in local time
+                ZonedDateTime startTime =  startTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
+                ZonedDateTime endTime = endTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
 
                 appointment.setAppointmentStart(formatter.format((startTime)));
                 appointment.setAppointmentEnd(formatter.format(endTime));

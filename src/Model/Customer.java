@@ -15,14 +15,7 @@ public final class Customer {
 
     private String customerAddress = null;
     private int customerActive = 0;
-    /*
-    private int customerCity = 0;
-    private int customerZip = 0;
-    private int customerPhone = 0;
 
-
-     */
-    //public static int customerAppId;
 
     public static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 

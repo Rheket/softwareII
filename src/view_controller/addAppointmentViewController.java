@@ -24,6 +24,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -66,6 +68,7 @@ public class addAppointmentViewController implements Initializable {
 
     private int userAppId = 0;
     public SimpleIntegerProperty selectedAppointmentId;
+    public Appointment selectedApp;
     private boolean appCheck = false;
     private boolean validStart = true;
     private String overlappingTime;
@@ -128,11 +131,18 @@ public class addAppointmentViewController implements Initializable {
             String usr = getUsername();
             int customerAppsId = getCustomerAppId(customerName);
             userAppId = getUserId(usr);
-            String fullStart = app + " " + appointmentStartTime;
-            String fullEnd = app + " " + appointmentEndTime;
 
-            LocalDateTime checkStartOverlap = LocalDateTime.parse(fullStart, secondFormatter);
-            LocalDateTime checkEndOverlap = LocalDateTime.parse(fullEnd, secondFormatter);
+            String startTime = app + " " + appointmentStartTime;
+            String endTime = app + " " + appointmentEndTime;
+
+            LocalDateTime checkStartOverlap = LocalDateTime.parse(startTime, secondFormatter);
+            LocalDateTime checkEndOverlap = LocalDateTime.parse(endTime, secondFormatter);
+            //convert to ZonedDateTime to add time zone
+            ZonedDateTime systemStart = ZonedDateTime.of(checkStartOverlap, ZoneId.systemDefault());
+            ZonedDateTime systemEnd = ZonedDateTime.of(checkEndOverlap, ZoneId.systemDefault());
+
+            ZonedDateTime utcStart = systemStart.withZoneSameInstant(ZoneId.of("UTC"));
+            ZonedDateTime utcEnd = systemEnd.withZoneSameInstant(ZoneId.of("UTC"));
 
             validateStart(checkStartOverlap, checkEndOverlap);
             checkOverlapping(checkStartOverlap, checkEndOverlap);
@@ -161,13 +171,13 @@ public class addAppointmentViewController implements Initializable {
                 try {
 
                     Statement stmt = DBConnection.conn.createStatement();
-                    String sqlStatement = "INSERT INTO `appointment` VALUES (" + appointmentId + "," + customerAppsId + "," + userAppId + ",'" + appointmentTitle + "','" + appointmentDescription + "','" + appointmentLocation + "','" + appointmentContact + "','" + appointmentType + "','" + appointmentUrl + "','" + fullStart + "','" + fullEnd + "','" + ts + "','" + usr + "','" + ts + "','" + usr + "')" ;
+                    String sqlStatement = "INSERT INTO `appointment` VALUES (" + appointmentId + "," + customerAppsId + "," + userAppId + ",'" + appointmentTitle + "','" + appointmentDescription + "','" + appointmentLocation + "','" + appointmentContact + "','" + appointmentType + "','" + appointmentUrl + "','" + utcStart.toLocalDateTime() + "','" + utcEnd.toLocalDateTime() + "','" + ts + "','" + usr + "','" + ts + "','" + usr + "')" ;
                     stmt.executeUpdate(sqlStatement);
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.initModality(Modality.APPLICATION_MODAL);
                     alert.setTitle("Appointment added");
-                    alert.setContentText("Appointment from " + fullStart + " to " + fullEnd + " has been added.");
+                    alert.setContentText("Appointment from " + startTime + " to " + endTime + " has been added.");
 
                     alert.showAndWait();
 
@@ -207,12 +217,11 @@ public class addAppointmentViewController implements Initializable {
 
         }
 
-
-
-        }
+    }
 
     public void saveUpdateAppointment(ActionEvent actionEvent) throws IOException {
 
+        int appId = selectedAppointmentId.intValue();
         customerName = String.valueOf(customerNameComboBox.getSelectionModel().getSelectedItem());
         appointmentTitle = appointmentTitleTextField.getText();
         appointmentDescription = appointmentDescriptionTextField.getText();
@@ -222,30 +231,42 @@ public class addAppointmentViewController implements Initializable {
         appointmentUrl = appointmentUrlTextField.getText();
         app = String.valueOf(appointmentDate.getValue());
         appointmentStartTime = String.valueOf(appointmentStartTimeComboBox.getSelectionModel().getSelectedItem());
-
         appointmentEndTime = String.valueOf(appointmentEndTimeComboBox.getSelectionModel().getSelectedItem());
 
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         String usr = getUsername();
         userAppId = getUserId(usr);
-        String fullStart = app + " " + appointmentStartTime;
-        String fullEnd = app + " " + appointmentEndTime;
 
-        LocalDateTime checkStartOverlap = LocalDateTime.parse(fullStart, secondFormatter);
-        LocalDateTime checkEndOverlap = LocalDateTime.parse(fullEnd, secondFormatter);
+        String startTime = app + " " + appointmentStartTime;
+        String endTime = app + " " + appointmentEndTime;
 
+        LocalDateTime checkStartOverlap = LocalDateTime.parse(startTime, secondFormatter);
+        LocalDateTime checkEndOverlap = LocalDateTime.parse(endTime, secondFormatter);
+        //convert to ZonedDateTime to add time zone
+        ZonedDateTime systemStart = ZonedDateTime.of(checkStartOverlap, ZoneId.systemDefault());
+        ZonedDateTime systemEnd = ZonedDateTime.of(checkEndOverlap, ZoneId.systemDefault());
+
+        ZonedDateTime utcStart = systemStart.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime utcEnd = systemEnd.withZoneSameInstant(ZoneId.of("UTC"));
+
+        validateStart(checkStartOverlap, checkEndOverlap);
         checkOverlapping(checkStartOverlap, checkEndOverlap);
 
         if(appCheck) {
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setTitle("Error Adding Appointment");
-            alert.setContentText("An appointment already exists from: " + "\n" + overlappingTime + "\nplease choose a time that doesn't overlap.");
+            if (appointmentStartTime.equals(selectedApp.getAppointmentStart()) || appointmentEndTime.equals(selectedApp.getAppointmentEnd())) {
 
+            } else {
 
-            alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Error Adding Appointment");
+                alert.setContentText("An appointment already exists from: " + "\n" + overlappingTime + "\nplease choose a time that doesn't overlap.");
+
+                alert.showAndWait();
+
+            }
             appCheck = false;
 
         } else if(!validStart) {
@@ -254,6 +275,7 @@ public class addAppointmentViewController implements Initializable {
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setTitle("Start time error");
             alert.setContentText("Appointment start time can not be after or the same as end time");
+
             alert.showAndWait();
             validStart = true;
 
@@ -261,16 +283,18 @@ public class addAppointmentViewController implements Initializable {
 
             try {
 
-                String sqlStatement = "UPDATE appointment SET userId=" + userAppId + ", title='" + appointmentTitle + "', description='" + appointmentDescription + "', location='" + appointmentLocation + "', contact='" + appointmentContact + "', type='" + appointmentType + "', url='" + appointmentUrl + "', start='" + fullStart + "', end='" + fullEnd + "', lastUpdate='" + ts + "', lastUpdateBy='" + usr + "' WHERE appointmentId=" + selectedAppointmentId;
+                String sqlStatement = "UPDATE appointment SET userId=" + userAppId + ", title='" + appointmentTitle + "', description='" + appointmentDescription + "', location='" + appointmentLocation + "', contact='" + appointmentContact + "', type='" + appointmentType + "', url='" + appointmentUrl + "', start='" + utcStart.toLocalDateTime() + "', end='" + utcEnd.toLocalDateTime() + "', lastUpdate='" + ts + "', lastUpdateBy='" + usr + "' WHERE appointmentId=" + appId;
                 Statement stmt = DBConnection.conn.createStatement();
                 stmt.executeUpdate(sqlStatement);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.initModality(Modality.APPLICATION_MODAL);
                 alert.setTitle("Appointment updated");
-                alert.setContentText("Appointment from " + fullStart + " to " + fullEnd + " has been updated.");
+                alert.setContentText("Appointment from " + startTime + " to " + endTime + " has been updated.");
 
                 alert.showAndWait();
+                allAppointments.clear();
+
 
             } catch (SQLException e) {
                 e.printStackTrace();

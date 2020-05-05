@@ -1,13 +1,16 @@
 package view_controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
+import static DAO.DBConnection.closeConnection;
 
 public class mainScreenController {
 
@@ -40,6 +43,13 @@ public class mainScreenController {
         Stage reportsViewWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         reportsViewWindow.setScene(reportsViewScene);
         reportsViewWindow.show();
+
+    }
+
+    public void exit() throws SQLException {
+
+        System.exit(0);
+        closeConnection();
 
     }
 

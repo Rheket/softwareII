@@ -80,8 +80,19 @@ public class monthlyViewController implements Initializable {
                 appointment.setAppointmentContact(result.getString("contact"));
                 appointment.setAppointmentType(result.getString("type"));
                 appointment.setAppointmentUrl(result.getString("url"));
-                appointment.setAppointmentStart(result.getString("start"));
-                appointment.setAppointmentEnd(result.getString("end"));
+
+                //get the times from the sql table
+                LocalDateTime ldtStart = LocalDateTime.parse(result.getString("start"), formatter);
+                LocalDateTime ldtEnd = LocalDateTime.parse(result.getString("end"), formatter);
+                //Database times are in UTC
+                ZonedDateTime startTimeUTC = ZonedDateTime.of(ldtStart, ZoneId.of("UTC"));
+                ZonedDateTime endTimeUTC = ZonedDateTime.of(ldtEnd, ZoneId.of("UTC"));
+                //convert values to display in local time
+                ZonedDateTime startTime =  startTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
+                ZonedDateTime endTime = endTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
+
+                appointment.setAppointmentStart(formatter.format((startTime)));
+                appointment.setAppointmentEnd(formatter.format(endTime));
                 appointment.setAppointmentCreateDate(result.getString("createDate"));
                 appointment.setAppointmentCreatedBy(result.getString("createdBy"));
                 appointment.setAppointmentLastUpdate(result.getString("lastUpdate"));
@@ -137,6 +148,7 @@ public class monthlyViewController implements Initializable {
             controller.initializeToUpdate(appointmentId);
             //pass selected appointmentId to appointment view controller
             controller.selectedAppointmentId = appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentId();
+            controller.selectedApp = appointmentTableView.getSelectionModel().getSelectedItem();
 
             //set variables for appointment view controller
             //controller.updateCName = String.valueOf(customerNameComboB)
@@ -192,6 +204,7 @@ public class monthlyViewController implements Initializable {
             });
 
             //clear table and update with new appointments
+            allAppointments.clear();
             appointmentTableView.getItems().clear();
             initializeAppointments();
 
@@ -248,14 +261,15 @@ public class monthlyViewController implements Initializable {
                 //get the times from the sql table
                 LocalDateTime ldtStart = LocalDateTime.parse(result.getString("start"), formatter);
                 LocalDateTime ldtEnd = LocalDateTime.parse(result.getString("end"), formatter);
-                //convert values to ZonDateTime in local time
-                ZonedDateTime startTime =  ZonedDateTime.of(ldtStart, ZoneId.systemDefault());
-                ZonedDateTime endTime = ZonedDateTime.of(ldtEnd, ZoneId.systemDefault());
+                //Database times are in UTC
+                ZonedDateTime startTimeUTC = ZonedDateTime.of(ldtStart, ZoneId.of("UTC"));
+                ZonedDateTime endTimeUTC = ZonedDateTime.of(ldtEnd, ZoneId.of("UTC"));
+                //convert values to display in local time
+                ZonedDateTime startTime =  startTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
+                ZonedDateTime endTime = endTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
 
                 appointment.setAppointmentStart(formatter.format((startTime)));
                 appointment.setAppointmentEnd(formatter.format(endTime));
-                appointment.setAppointmentCreateDate(result.getString("createDate"));
-                appointment.setAppointmentCreatedBy(result.getString("createdBy"));
                 appointment.setAppointmentLastUpdate(result.getString("lastUpdate"));
                 appointment.setAppointmentLastUpdatedBy(result.getString("lastUpdateBy"));
 
@@ -307,15 +321,15 @@ public class monthlyViewController implements Initializable {
                 //get the times from the sql table
                 LocalDateTime ldtStart = LocalDateTime.parse(result.getString("start"), formatter);
                 LocalDateTime ldtEnd = LocalDateTime.parse(result.getString("end"), formatter);
-                //convert values to ZonDateTime in local time
-                ZonedDateTime startTime =  ZonedDateTime.of(ldtStart, ZoneId.systemDefault());
-                ZonedDateTime endTime = ZonedDateTime.of(ldtEnd, ZoneId.systemDefault());
+                //Database times are in UTC
+                ZonedDateTime startTimeUTC = ZonedDateTime.of(ldtStart, ZoneId.of("UTC"));
+                ZonedDateTime endTimeUTC = ZonedDateTime.of(ldtEnd, ZoneId.of("UTC"));
+                //convert values to display in local time
+                ZonedDateTime startTime =  startTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
+                ZonedDateTime endTime = endTimeUTC.withZoneSameInstant(ZoneId.systemDefault());
 
                 appointment.setAppointmentStart(formatter.format((startTime)));
                 appointment.setAppointmentEnd(formatter.format(endTime));
-
-                appointment.setAppointmentCreateDate(result.getString("createDate"));
-                appointment.setAppointmentCreatedBy(result.getString("createdBy"));
                 appointment.setAppointmentLastUpdate(result.getString("lastUpdate"));
                 appointment.setAppointmentLastUpdatedBy(result.getString("lastUpdateBy"));
 

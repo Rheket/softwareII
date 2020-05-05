@@ -28,8 +28,6 @@ public class Appointment {
     private String appointmentLastUpdate;
     private String appointmentLastUpdatedBy;
 
-    //public int appIdCounter;
-
     public static ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
 
     public SimpleIntegerProperty getAppointmentId() {

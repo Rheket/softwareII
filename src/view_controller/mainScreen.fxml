@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="300.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.mainScreenController">
+<AnchorPane prefHeight="300.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.mainScreenController">
     <children>
         <VBox alignment="CENTER" prefHeight="300.0" prefWidth="200.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -19,6 +18,7 @@
                 <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCalendarViewSwitch" prefHeight="50.0" prefWidth="180.0" text="Appointments Calendar View" />
                 <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCustomerViewSwitch" prefHeight="50.0" prefWidth="180.0" text="Edit Customers" />
                 <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleReportsViewSwitch" prefHeight="50.0" prefWidth="180.0" text="View Reports" />
+            <Button mnemonicParsing="false" onAction="#exit" text="Exit" />
             </children>
         </VBox>
     </children>

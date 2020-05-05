@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view_controller.addAddressViewController">
+   <children>
+      <VBox alignment="CENTER" layoutY="-4.0" prefHeight="414.0" prefWidth="600.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefHeight="41.0" prefWidth="600.0">
+               <children>
+                  <Label layoutX="194.0" layoutY="6.0" text="Add or Edit an Address, Country, or City." />
+               </children>
+            </AnchorPane>
+            <HBox prefHeight="216.0" prefWidth="600.0" spacing="10.0">
+               <children>
+                  <AnchorPane prefHeight="216.0" prefWidth="279.0">
+                     <children>
+                        <ComboBox fx:id="countryCB" layoutX="14.0" layoutY="61.0" prefWidth="150.0" promptText="Country" />
+                        <ComboBox fx:id="cityCB" layoutX="14.0" layoutY="95.0" prefWidth="150.0" promptText="City" />
+                        <ComboBox fx:id="addressCB" layoutX="15.0" layoutY="24.0" prefWidth="150.0" promptText="Address" />
+                     </children>
+                  </AnchorPane>
+                  <VBox alignment="CENTER" prefHeight="216.0" prefWidth="252.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="addressTxtField" promptText="Street address" />
+                        <TextField fx:id="countryTxtField" promptText="Country" />
+                        <TextField fx:id="cityTxtField" promptText="City" />
+                        <TextField fx:id="zipTxtField" promptText="Zip Code" />
+                        <TextField fx:id="phoneTxtField" promptText="Phone" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+               <children>
+                  <AnchorPane prefHeight="99.0" prefWidth="609.0">
+                     <children>
+                        <Button layoutX="526.0" layoutY="72.0" mnemonicParsing="false" onAction="#cancelAddNewAddress" text="Cancel" />
+                        <AnchorPane layoutX="117.0" layoutY="3.0" prefHeight="94.0" prefWidth="87.0">
+                           <children>
+                              <RadioButton fx:id="editCountryRb" layoutY="19.0" mnemonicParsing="false" onAction="#radioButtonSelected" text="Edit Country" />
+                              <RadioButton fx:id="editAddressRb" mnemonicParsing="false" onAction="#radioButtonSelected" text="Edit Address" />
+                              <RadioButton fx:id="editCityRB" layoutY="37.0" mnemonicParsing="false" onAction="#radioButtonSelected" text="Edit City" />
+                              <Button fx:id="editButton" layoutX="1.0" layoutY="68.0" mnemonicParsing="false" onAction="#saveEditClicked" text="Save Edit" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="14.0" layoutY="3.0">
+                           <children>
+                              <RadioButton fx:id="newAddressRb" mnemonicParsing="false" onAction="#radioButtonSelected" text="New Address" />
+                              <RadioButton fx:id="newCountryRb" layoutY="19.0" mnemonicParsing="false" onAction="#radioButtonSelected" text="New Country" />
+                              <RadioButton fx:id="newCityRb" layoutY="38.0" mnemonicParsing="false" onAction="#radioButtonSelected" text="New City" />
+                              <Button fx:id="saveButton" layoutY="68.0" mnemonicParsing="false" onAction="#saveNewClicked" text="Save New" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="221.0" layoutY="3.0" prefHeight="94.0" prefWidth="87.0">
+                           <children>
+                              <RadioButton fx:id="delCountryRb" layoutY="19.0" mnemonicParsing="false" onAction="#radioButtonSelected" text="Delete Country" />
+                              <RadioButton fx:id="delAddressRb" mnemonicParsing="false" onAction="#radioButtonSelected" text="Delete Address" />
+                              <RadioButton fx:id="delCityRb" layoutY="37.0" mnemonicParsing="false" onAction="#radioButtonSelected" text="Delete City" />
+                              <Button fx:id="deleteButton" layoutX="1.0" layoutY="68.0" mnemonicParsing="false" onAction="#deleteClicked" text="Delete" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -62,10 +62,11 @@
                         <Label fx:id="editZip" />
                      </children>
                   </HBox>
-                  <HBox spacing="50.0">
+                  <HBox spacing="10.0">
                      <children>
                         <Button fx:id="saveNewButton" mnemonicParsing="false" onAction="#addCustomerRecord" text="Save New Customer" />
                         <Button fx:id="saveEditButton" mnemonicParsing="false" onAction="#saveCustomerRecord" text="Save Edit Customer" />
+                        <Button mnemonicParsing="false" onAction="#newAddress" text="New Address" />
                      </children>
                      <padding>
                         <Insets top="30.0" />
@@ -81,10 +82,10 @@
             </VBox>
             <VBox alignment="CENTER" spacing="10.0">
                <children>
-                  <TableView fx:id="customerTableView" prefHeight="400.0" prefWidth="314.0">
+                  <TableView fx:id="customerTableView" prefHeight="400.0" prefWidth="297.0">
                      <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="70.0" text="ID" />
-                        <TableColumn fx:id="customerNameColumn" prefWidth="170.0" resizable="false" text="Customer Name" />
+                        <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
+                        <TableColumn fx:id="customerNameColumn" prefWidth="240.0" resizable="false" text="Customer Name" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

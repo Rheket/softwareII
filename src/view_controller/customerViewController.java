@@ -1,10 +1,8 @@
 package view_controller;
 
 import DAO.DBConnection;
+import Model.Country;
 import Model.Customer;
-import Model.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,16 +24,15 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static DAO.Database.*;
+import static Model.Address.*;
+import static Model.City.*;
+import static Model.Country.associatedCountry;
+import static Model.Country.setCountrySelections;
 import static Model.Customer.allCustomers;
 import static Model.Customer.getAllCustomers;
+import static Model.User.getUsername;
 
 public class customerViewController implements Initializable {
-
-    public ObservableList<String> associatedCountry = FXCollections.observableArrayList();
-    public ObservableList<String> associatedCity = FXCollections.observableArrayList();
-    public ObservableList<String> associatedAddress = FXCollections.observableArrayList();
-    public ObservableList<String> associatedZipCode = FXCollections.observableArrayList();
 
     @FXML private TextField nameTextField;
     @FXML private ComboBox countryComboBox;
@@ -98,20 +95,20 @@ public class customerViewController implements Initializable {
             city = String.valueOf(cityComboBox.getSelectionModel().getSelectedItem());
             address = String.valueOf(addressComboBox.getSelectionModel().getSelectedItem());
             zipCode = String.valueOf(zipComboBox.getSelectionModel().getSelectedItem());
-
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
+            String usr = getUsername();
             int addressId = getAddressId(address);
 
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
+
 
             idCounter++;
 
             try {
                 //DBConnection.makeConnection();
                 Statement stmt = DBConnection.conn.createStatement();
-                String sqlStatement = "INSERT INTO `customer` VALUES (" + idCounter + ", '" + name + "'," + addressId + ",1,'" + ts +  "','test','2019-01-01 00:00:00','test')";
+                String sqlStatement = "INSERT INTO `customer` VALUES (" + idCounter + ", '" + name + "'," + addressId + ",1,'" + ts + "','" + usr + "','" + ts + "','" + usr + "')";
 
                 stmt.executeUpdate(sqlStatement);
-                //System.out.println(sqlStatement);
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -140,11 +137,12 @@ public class customerViewController implements Initializable {
 
                     String cName = result.getString("customerName");
                     int cAddressId = result.getInt("addressId");
+                    Country country = new Country();
 
-                    String cCountry = getCountryName(cAddressId);
+                    String cCountry = country.getCountryName(cAddressId);
                     String cCity = getCityName(cAddressId);
                     String cAddress = getAddressName(cAddressId);
-                    String cZip = getZip(cAddress);
+                    String cZip = getZip(cAddressId);
 
                     editLabel.setText("Use left options to edit " + cName);
                     editName.setText(cName);
@@ -203,8 +201,7 @@ public class customerViewController implements Initializable {
 
                 int addressId = getAddressId(address);
 
-                //User usr = new User();
-                String theUser = User.getUsername();
+                String theUser = getUsername();
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
 
                 try {
@@ -219,6 +216,7 @@ public class customerViewController implements Initializable {
                     editCity.setText("");
                     editCountry.setText("");
                     editZip.setText("");
+
 
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -239,6 +237,8 @@ public class customerViewController implements Initializable {
         //clear table and update with new customers
         customerTableView.getItems().clear();
         initializeCustomers();
+
+        addressComboBox.setPromptText("Address");
 
     }
 
@@ -272,7 +272,6 @@ public class customerViewController implements Initializable {
 
                 }
 
-                //System.out.println(sqlStatement);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -296,99 +295,46 @@ public class customerViewController implements Initializable {
 
     }
 
-    public void setCountrySelections() {
+    public void setCountryComboBox() {
 
-        try {
+        setCountrySelections();
+        countryComboBox.setItems(associatedCountry);
+        countryComboBox.setPromptText("Country");
 
-            String sqlStatement = "SELECT * FROM country";
-
-            Statement stmt = DBConnection.conn.createStatement();
-
-            ResultSet result = stmt.executeQuery(sqlStatement);
-
-            while (result.next()) {
-                String getCountry = result.getString("country");
-                associatedCountry.add(getCountry);
-                countryComboBox.setItems(associatedCountry);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
     }
 
-    public void setCitySelections() {
+    public void setCityComboBox() {
 
-        try {
-
-            String sqlStatement = "SELECT * FROM city";
-            Statement stmt = DBConnection.conn.createStatement();
-            ResultSet result = stmt.executeQuery(sqlStatement);
-
-            while (result.next()) {
-
-                String getCity = result.getString("city");
-                associatedCity.add(getCity);
-                cityComboBox.setItems(associatedCity);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setAddressSelections() {
-
-        try {
-
-            String sqlStatement = "SELECT * FROM address";
-            Statement stmt = DBConnection.conn.createStatement();
-            ResultSet result = stmt.executeQuery(sqlStatement);
-
-            while (result.next()) {
-
-                String getAddress = result.getString("Address");
-
-                associatedAddress.add(getAddress);
-
-                addressComboBox.setItems(associatedAddress);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        setCitySelections();
+        cityComboBox.setItems(associatedCity);
+        cityComboBox.setPromptText("City");
 
     }
 
-    public void getZipSelections() {
+    public void setAddressComboBox() {
 
-        try {
+        setAddressSelections();
+        addressComboBox.setItems(associatedAddress);
+        addressComboBox.setPromptText("Address");
 
-            String sqlStatement = "SELECT * FROM address";
-            Statement stmt = DBConnection.conn.createStatement();
-            ResultSet result = stmt.executeQuery(sqlStatement);
+    }
 
-            while (result.next()) {
+    public void setZipComboBox() {
 
-                String getZip = result.getString("postalCode");
-                associatedZipCode.add(getZip);
-
-                zipComboBox.setItems(associatedZipCode);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        setZipSelections();
+        zipComboBox.setItems(associatedZipCode);
+        zipComboBox.setPromptText("Zip Code");
     }
 
     public static void initializeCustomers () {
 
-        Statement stmt = null;
+        Statement stmt;
 
         try {
             stmt = DBConnection.conn.createStatement();
             String sqlStatement = "SELECT * FROM customer";
             ResultSet result = stmt.executeQuery(sqlStatement);
-
-            //ResourceBundle rb = null;
 
             while (result.next()) {
 
@@ -435,15 +381,26 @@ public class customerViewController implements Initializable {
         saveEditButton.setVisible(toggleEditButton);
     }
 
+    public void newAddress(ActionEvent actionEvent) throws IOException{
+
+        Parent mainMenuParent = FXMLLoader.load(getClass().getResource("/view_controller/addAddressView.fxml"));
+        Scene mainMenuScene = new Scene(mainMenuParent);
+
+        Stage mainMenuWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        mainMenuWindow.setScene(mainMenuScene);
+        mainMenuWindow.show();
+
+    }
+
     @Override
     public void initialize (URL url, ResourceBundle rb) {
 
+        setCountryComboBox();
+        setAddressComboBox();
+        setCityComboBox();
+        setZipComboBox();
 
-        setCountrySelections();
-        setAddressSelections();
-        setCitySelections();
-        getZipSelections();
-
+        allCustomers.clear();
         initializeCustomers();
         initIdCounter();
         setButtons();
@@ -451,6 +408,7 @@ public class customerViewController implements Initializable {
         customerTableView.setItems(getAllCustomers());
         customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         idColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+
 
     }
 
