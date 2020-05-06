@@ -16,7 +16,6 @@ public final class Customer {
     private String customerAddress = null;
     private int customerActive = 0;
 
-
     public static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
     public Customer() {

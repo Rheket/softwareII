@@ -10,46 +10,9 @@ import java.sql.Statement;
 
 public class Country {
 
-    private int countryId;
-    //private String countryName;
     public static ObservableList<String> associatedCountry = FXCollections.observableArrayList();
 
     public static String delCity;
-
-/*
-    public void setCountryId(int countryId) {
-        this.countryId = countryId;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
- */
-
-
-    public static String getCountryName(int countryId) {
-
-        String countryName = null;
-
-        try {
-
-            String sqlStatement = "SELECT country FROM country WHERE countryId=" + countryId;
-            Statement stmt = DBConnection.conn.createStatement();
-            ResultSet result = stmt.executeQuery(sqlStatement);
-
-            while (result.next()) {
-
-                countryName = result.getString("country");
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return countryName;
-
-    }
 
     public static int getAssociatedCountryId(String c) {
 

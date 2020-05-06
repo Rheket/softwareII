@@ -1,7 +1,6 @@
 package view_controller;
 
 import DAO.DBConnection;
-import Model.Country;
 import Model.Customer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,8 +25,6 @@ import java.util.ResourceBundle;
 
 import static Model.Address.*;
 import static Model.City.*;
-import static Model.Country.associatedCountry;
-import static Model.Country.setCountrySelections;
 import static Model.Customer.allCustomers;
 import static Model.Customer.getAllCustomers;
 import static Model.User.getUsername;
@@ -35,7 +32,6 @@ import static Model.User.getUsername;
 public class customerViewController implements Initializable {
 
     @FXML private TextField nameTextField;
-    @FXML private ComboBox countryComboBox;
     @FXML private ComboBox cityComboBox;
     @FXML private ComboBox addressComboBox;
     @FXML private ComboBox zipComboBox;
@@ -45,7 +41,6 @@ public class customerViewController implements Initializable {
     //editing labels
     @FXML private Label editLabel;
     @FXML private Label editName;
-    @FXML private Label editCountry;
     @FXML private Label editZip;
     @FXML private Label editAddress;
     @FXML private Label editCity;
@@ -55,7 +50,6 @@ public class customerViewController implements Initializable {
     @FXML private TableColumn<Customer, String> idColumn;
 
     String name = "";
-    String country = "";
     String city = "";
     String address = "";
     String zipCode = "";
@@ -80,7 +74,7 @@ public class customerViewController implements Initializable {
     // Add update delete customer records
     public void addCustomerRecord() {
 
-        if(nameTextField.getText().trim().equals("") | addressComboBox.getValue() == null | cityComboBox.getValue() == null | countryComboBox.getValue() == null | zipComboBox.getValue() == null) {
+        if(nameTextField.getText().trim().equals("") | addressComboBox.getValue() == null | cityComboBox.getValue() == null | zipComboBox.getValue() == null) {
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
@@ -91,7 +85,6 @@ public class customerViewController implements Initializable {
 
         } else {
             name = nameTextField.getText();
-            country = String.valueOf(countryComboBox.getSelectionModel().getSelectedItem());
             city = String.valueOf(cityComboBox.getSelectionModel().getSelectedItem());
             address = String.valueOf(addressComboBox.getSelectionModel().getSelectedItem());
             zipCode = String.valueOf(zipComboBox.getSelectionModel().getSelectedItem());
@@ -104,7 +97,7 @@ public class customerViewController implements Initializable {
             idCounter++;
 
             try {
-                //DBConnection.makeConnection();
+
                 Statement stmt = DBConnection.conn.createStatement();
                 String sqlStatement = "INSERT INTO `customer` VALUES (" + idCounter + ", '" + name + "'," + addressId + ",1,'" + ts + "','" + usr + "','" + ts + "','" + usr + "')";
 
@@ -116,6 +109,7 @@ public class customerViewController implements Initializable {
 
             //clear table and update with new customers
         }
+        clearSelections();
         customerTableView.getItems().clear();
         initializeCustomers();
 
@@ -137,9 +131,7 @@ public class customerViewController implements Initializable {
 
                     String cName = result.getString("customerName");
                     int cAddressId = result.getInt("addressId");
-                    Country country = new Country();
 
-                    String cCountry = country.getCountryName(cAddressId);
                     String cCity = getCityName(cAddressId);
                     String cAddress = getAddressName(cAddressId);
                     String cZip = getZip(cAddressId);
@@ -148,10 +140,7 @@ public class customerViewController implements Initializable {
                     editName.setText(cName);
                     editAddress.setText(cAddress);
                     editCity.setText(cCity);
-                    editCountry.setText(cCountry);
                     editZip.setText(cZip);
-
-
 
                 }
                 toggleEditButton = true;
@@ -181,7 +170,7 @@ public class customerViewController implements Initializable {
 
         if (customerTableView.getSelectionModel().getSelectedItem() != null) {
 
-            if (nameTextField.getText().trim().equals("") | addressComboBox.getValue() == null | cityComboBox.getValue() == null | countryComboBox.getValue() == null | zipComboBox.getValue() == null) {
+            if (nameTextField.getText().trim().equals("") | addressComboBox.getValue() == null | cityComboBox.getValue() == null | zipComboBox.getValue() == null) {
 
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.initModality(Modality.APPLICATION_MODAL);
@@ -193,7 +182,6 @@ public class customerViewController implements Initializable {
             } else {
 
                 name = nameTextField.getText();
-                country = String.valueOf(countryComboBox.getSelectionModel().getSelectedItem());
                 city = String.valueOf(cityComboBox.getSelectionModel().getSelectedItem());
                 address = String.valueOf(addressComboBox.getSelectionModel().getSelectedItem());
                 zipCode = String.valueOf(zipComboBox.getSelectionModel().getSelectedItem());
@@ -214,7 +202,6 @@ public class customerViewController implements Initializable {
                     editName.setText("");
                     editAddress.setText("");
                     editCity.setText("");
-                    editCountry.setText("");
                     editZip.setText("");
 
 
@@ -235,10 +222,9 @@ public class customerViewController implements Initializable {
 
         }
         //clear table and update with new customers
+        clearSelections();
         customerTableView.getItems().clear();
         initializeCustomers();
-
-        addressComboBox.setPromptText("Address");
 
     }
 
@@ -295,20 +281,10 @@ public class customerViewController implements Initializable {
 
     }
 
-    public void setCountryComboBox() {
-
-        setCountrySelections();
-        countryComboBox.setItems(associatedCountry);
-        countryComboBox.setPromptText("Country");
-
-
-    }
-
     public void setCityComboBox() {
 
         setCitySelections();
         cityComboBox.setItems(associatedCity);
-        cityComboBox.setPromptText("City");
 
     }
 
@@ -316,7 +292,6 @@ public class customerViewController implements Initializable {
 
         setAddressSelections();
         addressComboBox.setItems(associatedAddress);
-        addressComboBox.setPromptText("Address");
 
     }
 
@@ -324,7 +299,7 @@ public class customerViewController implements Initializable {
 
         setZipSelections();
         zipComboBox.setItems(associatedZipCode);
-        zipComboBox.setPromptText("Zip Code");
+
     }
 
     public static void initializeCustomers () {
@@ -392,10 +367,18 @@ public class customerViewController implements Initializable {
 
     }
 
+    private void clearSelections() {
+
+        nameTextField.setText("");
+        addressComboBox.getSelectionModel().clearSelection();
+        cityComboBox.getSelectionModel().clearSelection();
+        zipComboBox.getSelectionModel().clearSelection();
+
+    }
+
     @Override
     public void initialize (URL url, ResourceBundle rb) {
 
-        setCountryComboBox();
         setAddressComboBox();
         setCityComboBox();
         setZipComboBox();

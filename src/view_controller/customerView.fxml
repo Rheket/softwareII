@@ -23,42 +23,40 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <AnchorPane>
+                  <AnchorPane prefHeight="72.0" prefWidth="388.0">
                      <children>
                         <Label fx:id="editLabel" layoutX="174.0" layoutY="7.0" />
-                        <Button alignment="TOP_LEFT" layoutY="4.0" mnemonicParsing="false" onAction="#mainMenu" text="Main Menu" />
+                        <Button alignment="TOP_LEFT" layoutY="24.0" mnemonicParsing="false" onAction="#mainMenu" text="Main Menu" />
                      </children>
                   </AnchorPane>
-                  <HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="100.0" spacing="30.0">
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="100.0" spacing="20.0">
                      <children>
-                        <TextField fx:id="nameTextField" promptText="Name" />
+                        <Label minWidth="-Infinity" prefWidth="50.0" text="Name" />
+                        <TextField fx:id="nameTextField" minWidth="-Infinity" prefWidth="100.0" promptText="Name" />
                         <Label fx:id="editName" />
                      </children>
                      <padding>
                         <Insets right="10.0" />
                      </padding>
                   </HBox>
-                  <HBox minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="75.0">
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ComboBox fx:id="addressComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" promptText="Address" />
+                        <Label minWidth="-Infinity" prefWidth="50.0" text="Address" />
+                        <ComboBox fx:id="addressComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" />
                         <Label fx:id="editAddress" />
                      </children>
                   </HBox>
-                  <HBox minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="75.0">
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ComboBox fx:id="cityComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" promptText="City" />
+                        <Label minWidth="-Infinity" prefWidth="50.0" text="City" />
+                        <ComboBox fx:id="cityComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" />
                         <Label fx:id="editCity" />
                      </children>
                   </HBox>
-                  <HBox minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="75.0">
+                  <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ComboBox fx:id="countryComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" promptText="Country" />
-                        <Label fx:id="editCountry" />
-                     </children>
-                  </HBox>
-                  <HBox minHeight="-Infinity" prefHeight="30.0" prefWidth="200.0" spacing="75.0">
-                     <children>
-                        <ComboBox fx:id="zipComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" promptText="Zip Code" />
+                        <Label minWidth="-Infinity" prefWidth="50.0" text="Zip Code" />
+                        <ComboBox fx:id="zipComboBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" />
                         <Label fx:id="editZip" />
                      </children>
                   </HBox>

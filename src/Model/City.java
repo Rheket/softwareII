@@ -11,7 +11,6 @@ import java.sql.Statement;
 public class City {
 
     private static int cityId;
-    private int countryId;
     private static String cityName;
 
     public static String delAddress;
@@ -38,18 +37,6 @@ public class City {
         return cityId;
     }
 
-    public void setCityId(int cityId) {
-        this.cityId = cityId;
-    }
-
-    public int getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(int countryId) {
-        this.countryId = countryId;
-    }
-
     public static String getCityName(int cityId) {
 
         try {
@@ -68,10 +55,6 @@ public class City {
         }
 
         return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
     }
 
     public int getCityIdCounter() {

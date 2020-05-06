@@ -10,8 +10,6 @@ public class User {
 
     private static String username;
 
-    public static int userId;
-
     public User() {}
 
     public static void setUsername(String usr) {

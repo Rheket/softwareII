@@ -66,6 +66,7 @@ public class addAddressViewController implements Initializable {
         addressCB.getItems().clear();
 
         setPhoneSelections();
+        setCountrySelections();
         cityCB.setItems(associatedCity);
         countryCB.setItems(associatedCountry);
         addressCB.setItems(associatedAddress);
@@ -139,7 +140,6 @@ public class addAddressViewController implements Initializable {
             cityCB.getItems().clear();
             setCitySelections();
             cityCB.setItems(associatedCity);
-            cityCB.setPromptText("City");
 
         }
 
@@ -188,7 +188,6 @@ public class addAddressViewController implements Initializable {
             countryCB.getItems().clear();
             setCountrySelections();
             countryCB.setItems(associatedCountry);
-            countryCB.setPromptText("Country");
 
         }
 
@@ -232,7 +231,7 @@ public class addAddressViewController implements Initializable {
             try{
 
                 Statement stmt = DBConnection.conn.createStatement();
-                String sqlStatement = "INSERT INTO `address` VALUES (" + addressId + ",'" + addressName + "',''," + cityId + ",'" + zipCode + "'," + phone + ",'" + ts + "','" + usr + "','" + ts + "','" + usr + "')";
+                String sqlStatement = "INSERT INTO `address` VALUES (" + addressId + ",'" + addressName + "',''," + cityId + ",'" + zipCode + "','" + phone + "','" + ts + "','" + usr + "','" + ts + "','" + usr + "')";
 
                 stmt.executeUpdate(sqlStatement);
 
@@ -253,7 +252,6 @@ public class addAddressViewController implements Initializable {
             addressCB.getItems().clear();
             setAddressSelections();
             addressCB.setItems(associatedAddress);
-            addressCB.setPromptText("Address");
 
         }
 
@@ -320,7 +318,6 @@ public class addAddressViewController implements Initializable {
             cityCB.getItems().clear();
             setCitySelections();
             cityCB.setItems(associatedCity);
-            cityCB.setPromptText("City");
 
         }
 
@@ -375,7 +372,6 @@ public class addAddressViewController implements Initializable {
             countryCB.getItems().clear();
             setCountrySelections();
             countryCB.setItems(associatedCountry);
-            countryCB.setPromptText("Country");
 
         }
 
@@ -426,7 +422,7 @@ public class addAddressViewController implements Initializable {
             try {
 
                 Statement stmt = DBConnection.conn.createStatement();
-                String sqlStatement = "UPDATE address SET address='" + addressName + "', cityId=" + cityId + ", postalCode=" + zipCode + ", phone='" + phone + "', lastUpdate='" + ts + "', lastUpdateBy='" + usr + "' WHERE addressId='" + addressId + "'";
+                String sqlStatement = "UPDATE address SET address='" + addressName + "', cityId=" + cityId + ", postalCode='" + zipCode + "', phone='" + phone + "', lastUpdate='" + ts + "', lastUpdateBy='" + usr + "' WHERE addressId='" + addressId + "'";
                 stmt.executeUpdate(sqlStatement);
 
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -444,7 +440,6 @@ public class addAddressViewController implements Initializable {
             addressCB.getItems().clear();
             setAddressSelections();
             addressCB.setItems(associatedAddress);
-            addressCB.setPromptText("Address");
 
         }
 
@@ -471,7 +466,7 @@ public class addAddressViewController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.initModality(Modality.APPLICATION_MODAL);
                 alert.setTitle("Error deleting City");
-                alert.setContentText(delAddress + " is associated with " + cityName + " and must first be deleted");
+                alert.setContentText("Address " + delAddress + " is associated with City " + cityName + " which must first be deleted");
 
                 alert.showAndWait();
 
@@ -507,7 +502,6 @@ public class addAddressViewController implements Initializable {
                 cityCB.getItems().clear();
                 setCitySelections();
                 cityCB.setItems(associatedCity);
-                cityCB.setPromptText("City");
 
             }
 
@@ -539,7 +533,7 @@ public class addAddressViewController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.initModality(Modality.APPLICATION_MODAL);
                 alert.setTitle("Error deleting Country");
-                alert.setContentText(delCity + " is associated with " + countryName + " and must first be deleted");
+                alert.setContentText("City " + delCity + " is associated with Country " + countryName + " which must first be deleted");
 
                 alert.showAndWait();
 
@@ -575,12 +569,10 @@ public class addAddressViewController implements Initializable {
                 countryCB.getItems().clear();
                 setCountrySelections();
                 countryCB.setItems(associatedCountry);
-                countryCB.setPromptText("Country");
 
             }
 
         }
-
 
 
     }
@@ -642,7 +634,6 @@ public class addAddressViewController implements Initializable {
                 addressCB.getItems().clear();
                 setAddressSelections();
                 addressCB.setItems(associatedAddress);
-                addressCB.setPromptText("Address");
 
             }
 
@@ -683,8 +674,6 @@ public class addAddressViewController implements Initializable {
     }
 
     public void saveNewClicked() {
-
-
 
         if (this.toggleGroup.getSelectedToggle().equals(newAddressRb)) {
 

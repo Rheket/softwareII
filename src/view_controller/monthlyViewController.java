@@ -151,7 +151,6 @@ public class monthlyViewController implements Initializable {
             controller.selectedApp = appointmentTableView.getSelectionModel().getSelectedItem();
 
             //set variables for appointment view controller
-            //controller.updateCName = String.valueOf(customerNameComboB)
             Stage addAppointmentWindow = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
             addAppointmentWindow.setScene(addAppointmentScene);
             addAppointmentWindow.show();
